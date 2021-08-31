@@ -5,14 +5,7 @@ then exit 2
 fi
 
 ## vars
-DATE=$(date +"%Y%m%d")
-LOG="build-script-log-$DATE.txt"
-BUILDDIR="$HOME/android/lineage"
-LOGDIR="$HOME/LOGS"
-ROMDIR="$HOME/ROM"
-TMPDIR="$HOME/TEMP"
-FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
-RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"
+source build-config.txt
 
 ## setup environment
 cd $BUILDDIR
@@ -53,4 +46,4 @@ fi
 
 mka installclean target-files-package otatools
 
-cd $HOME
+cd $SCRIPTPATH

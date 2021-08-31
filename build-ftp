@@ -4,19 +4,8 @@ if [ -z $1 ]
 then exit 2
 fi
 
-## vars
-DATE=$(date +"%Y%m%d")
-LOG="build-ftp-log-$DATE.txt"
-JSON="$1.json"
-LOGDIR="$HOME/LOGS"
-ROMDIR="$HOME/ROM"
-TMPDIR="$HOME/TEMP"
-TMPFILE="old_variables_$1.txt"
-FTPFILE="netrc"
-FTPDIRROM="ftp://domain.tld/files/lineage/$1/18.1/"
-FTPDIRJSON="ftp://domain.tld/files/lineage/"
-FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
-RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"
+## import vars
+source build-config.txt
 
 ## temp vars
 BUILD_DATE_OLD="$(sed -n '1 p' $TMPDIR/$TMPFILE)"

@@ -1,0 +1,19 @@
+## do not edit
+SCRIPTNAME=$(readlink -f $0)
+SCRIPTPATH=`dirname $SCRIPTNAME`
+LOG="$SCRIPTNAME-log-$DATE.txt"
+export TIMEFORMAT='%3lR'
+
+## variables
+DATE=$(date +"%Y%m%d")
+JSON="$1.json"
+BUILDDIR="$HOME/android/lineage"
+LOGDIR="$SCRIPTPATH/LOGS"
+ROMDIR="$SCRIPTPATH/ROM"
+TMPDIR="$SCRIPTPATH/TEMP"
+TMPFILE="old_variables_$1.txt"
+FTPFILE="netrc"
+FTPDIRROM="ftp://domain.tld/files/lineage/$1/18.1/"
+FTPDIRJSON="ftp://domain.tld/files/lineage/"
+FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
+RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"

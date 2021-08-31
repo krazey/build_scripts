@@ -1,9 +1,6 @@
 #!/bin/bash
-## vars
-DATE=$(date +"%Y%m%d")
-LOG="build-all-log-$DATE.txt"
-LOGDIR="$HOME/LOGS"
-export TIMEFORMAT='%3lR'
+## import vars
+source build-config.txt
 
 ## build
 echo "--crownlte" >> $LOGDIR/$LOG
