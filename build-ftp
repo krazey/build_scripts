@@ -14,7 +14,7 @@ FILESIZE_OLD="$(sed -n '3 p' $TMPDIR/$TMPFILE)"
 FILENAME_OLD="$(sed -n '4 p' $TMPDIR/$TMPFILE)"
 
 ## get new data
-BUILD_DATE="$(cat $TMPDIR/out/build_date_$1.txt)"
+BUILD_DATE="$(cat $TMPDIR/build_date_$1.txt)"
 MD5HASH="$(md5sum $ROMDIR/$FILENAME | awk '{print $1}')"
 FILESIZE="$(du -b $ROMDIR/$FILENAME | awk '{print $1}')"
 
