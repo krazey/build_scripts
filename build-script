@@ -37,7 +37,7 @@ if [ -e "$OUT"/lineage-*.zip ]
         echo "moving ROM zip and RECOVERY image"
         mv $OUT/lineage-*zip "$ROMDIR/"
         mv $OUT/recovery.img "$ROMDIR/$RECOVERY"
-        cp $T/out/build_date.txt "$TEMPDIR/build_date_$1.txt"
+        cp $T/out/build_date.txt "$TMPDIR/build_date_$1.txt"
 fi
 
 mka installclean target-files-package otatools
