@@ -2,17 +2,24 @@
 ## import vars
 source build-config.txt
 
-## build
-echo "--crownlte" >> $LOGDIR/$LOG
-( time ./build-script crownlte sync ) >> $LOGDIR/$LOG 2>&1
-echo "--/crownlte" >> $LOGDIR/$LOG
-echo "--star2lte" >> $LOGDIR/$LOG
-( time ./build-script star2lte ) >> $LOGDIR/$LOG 2>&1
-echo "--/star2lte" >> $LOGDIR/$LOG
-echo "--starlte" >> $LOGDIR/$LOG
-( time ./build-script starlte ) >> $LOGDIR/$LOG 2>&1
-echo "--/starlte" >> $LOGDIR/$LOG
+## temp vars
+product_device=(${DEVICES//,/ })
+IN=0
 
-echo "--starlte-ftp" >> $LOGDIR/$LOG
-( time ./build-ftp starlte ) >> $LOGDIR/$LOG 2>&1
-echo "--/starlte-ftp" >> $LOGDIR/$LOG
+## build
+while [ 1 ]
+do
+if [ -z ${product_device[$IN]} ]
+then
+    exit 0
+else
+    echo build: ${product_device[$IN]}
+    echo "--start--build--${product_device[$IN]}" >> $LOGDIR/$LOG
+    ( time ./build-script ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
+    echo "--end--build--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    echo "--start--ftp--${product_device[$IN]}" >> $LOGDIR/$LOG
+    ( time ./build-ftp ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
+    echo "--end--ftp--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    IN=$IN+1
+fi
+done
