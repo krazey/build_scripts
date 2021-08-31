@@ -23,9 +23,19 @@ else
         ( time ./build-script ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
         echo "--end--build--/${product_device[$IN]}" >> $LOGDIR/$LOG
     fi
-    echo "--start--ftp--${product_device[$IN]}" >> $LOGDIR/$LOG
-    ( time ./build-ftp ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
-    echo "--end--ftp--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    if [ -z $1 ]
+    then
+        echo no upload, variable not set
+    else
+        if [ $1 = upload ]
+        then
+            echo "--start--upload--${product_device[$IN]}" >> $LOGDIR/$LOG
+            ( time ./build-upload ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
+            echo "--end--upload--/${product_device[$IN]}" >> $LOGDIR/$LOG
+        else
+            echo no upload, fix typo: $2
+        fi
+    fi
     IN=$IN+1
 fi
 done
