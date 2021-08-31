@@ -1,6 +1,7 @@
 ## do not edit
-SCRIPTNAME=$(readlink -f $0)
-SCRIPTPATH=`dirname $SCRIPTNAME`
+SCRIPT=$(readlink -f $0)
+SCRIPTNAME=$(basename $BASH_SOURCE)
+SCRIPTPATH=`dirname $SCRIPT`
 LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
 
