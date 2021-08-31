@@ -5,6 +5,7 @@ LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
 
 ## variables
+DEVICES="crownlte,star2lte,starlte"
 DATE=$(date +"%Y%m%d")
 JSON="$1.json"
 BUILDDIR="$HOME/android/lineage"
