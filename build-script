@@ -25,9 +25,16 @@ export TIMEFORMAT='%3lR'
 breakfast $1
 
 ## sync repos
-if [ $2 = sync ]
+if [ -z $2 ]
+then
+    echo no repo sync, variable not set
+else
+    if [ $2 = sync ]
     then
         repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify
+    else
+        echo no repo sync, fix typo: $2
+    fi
 fi
 
 ## begin build process and write duration stats to logfile
