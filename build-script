@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z $1 ]
+then exit 2
+fi
+
 ## vars
 DATE=$(date +"%Y%m%d")
 LOG="build-script-log-$DATE.txt"
