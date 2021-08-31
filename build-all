@@ -13,10 +13,16 @@ if [ -z ${product_device[$IN]} ]
 then
     exit 0
 else
-    echo build: ${product_device[$IN]}
-    echo "--start--build--${product_device[$IN]}" >> $LOGDIR/$LOG
-    ( time ./build-script ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
-    echo "--end--build--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    if [ $IN = 0 ]
+    then
+        echo "--start--build+sync--${product_device[$IN]}" >> $LOGDIR/$LOG
+        ( time ./build-script ${product_device[$IN]} sync ) >> $LOGDIR/$LOG 2>&1
+        echo "--end--build+sync--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    else
+        echo "--start--build--${product_device[$IN]}" >> $LOGDIR/$LOG
+        ( time ./build-script ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
+        echo "--end--build--/${product_device[$IN]}" >> $LOGDIR/$LOG
+    fi
     echo "--start--ftp--${product_device[$IN]}" >> $LOGDIR/$LOG
     ( time ./build-ftp ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
     echo "--end--ftp--/${product_device[$IN]}" >> $LOGDIR/$LOG
