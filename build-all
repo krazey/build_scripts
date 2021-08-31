@@ -1,0 +1,21 @@
+#!/bin/bash
+## vars
+DATE=$(date +"%Y%m%d")
+LOG="build-all-log-$DATE.txt"
+LOGDIR="$HOME/LOGS"
+export TIMEFORMAT='%3lR'
+
+## build
+echo "--crownlte" >> $LOGDIR/$LOG
+( time ./build-script crownlte sync ) >> $LOGDIR/$LOG 2>&1
+echo "--/crownlte" >> $LOGDIR/$LOG
+echo "--star2lte" >> $LOGDIR/$LOG
+( time ./build-script star2lte ) >> $LOGDIR/$LOG 2>&1
+echo "--/star2lte" >> $LOGDIR/$LOG
+echo "--starlte" >> $LOGDIR/$LOG
+( time ./build-script starlte ) >> $LOGDIR/$LOG 2>&1
+echo "--/starlte" >> $LOGDIR/$LOG
+
+echo "--starlte-ftp" >> $LOGDIR/$LOG
+( time ./build-ftp starlte ) >> $LOGDIR/$LOG 2>&1
+echo "--/starlte-ftp" >> $LOGDIR/$LOG

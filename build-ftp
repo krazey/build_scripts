@@ -1,0 +1,50 @@
+#!/bin/bash
+
+## vars
+DATE=$(date +"%Y%m%d")
+LOG="build-ftp-log-$DATE.txt"
+JSON="$1.json"
+LOGDIR="$HOME/LOGS"
+ROMDIR="$HOME/ROM"
+TMPDIR="$HOME/TEMP"
+TMPFILE="old_variables_$1.txt"
+FTPFILE="netrc"
+FTPDIRROM="ftp://domain.tld/files/lineage/$1/18.1/"
+FTPDIRJSON="ftp://domain.tld/files/lineage/"
+FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
+RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"
+
+## temp vars
+BUILD_DATE_OLD="$(sed -n '1 p' $TMPDIR/$TMPFILE)"
+MD5HASH_OLD="$(sed -n '2 p' $TMPDIR/$TMPFILE)"
+FILESIZE_OLD="$(sed -n '3 p' $TMPDIR/$TMPFILE)"
+FILENAME_OLD="$(sed -n '4 p' $TMPDIR/$TMPFILE)"
+
+## get new data
+BUILD_DATE="$(cat $TMPDIR/out/build_date_$1.txt)"
+MD5HASH="$(md5sum $ROMDIR/$FILENAME | awk '{print $1}')"
+FILESIZE="$(du -b $ROMDIR/$FILENAME | awk '{print $1}')"
+
+## generate new json
+sed "s/"$BUILD_DATE_OLD"/"$BUILD_DATE"/" $TMPDIR/$JSON > "$TMPDIR/temp1.json"
+sed "s/"$MD5HASH_OLD"/"$MD5HASH"/" $TMPDIR/temp1.json > "$TMPDIR/temp2.json"
+sed "s/"$FILESIZE_OLD"/"$FILESIZE"/" $TMPDIR/temp2.json > "$TMPDIR/temp3.json"
+sed "s/"$FILENAME_OLD"/"$FILENAME"/" $TMPDIR/temp3.json > "$TMPDIR/temp4.json"
+cp $TMPDIR/temp4.json $TMPDIR/$JSON
+rm $TMPDIR/temp*.json
+echo $1: builddate $BUILD_DATE_OLD to $BUILD_DATE >> $LOGDIR/$LOG
+echo $1: md5hash $MD5HASH_OLD to $MD5HASH >> $LOGDIR/$LOG
+echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
+echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
+
+## store new data in tmpfile
+rm $TMPDIR/$TMPFILE
+echo $BUILD_DATE >> "$TMPDIR/$TMPFILE"
+echo $MD5HASH >> "$TMPDIR/$TMPFILE"
+echo $FILESIZE >> "$TMPDIR/$TMPFILE"
+echo $FILENAME >> "$TMPDIR/$TMPFILE"
+
+## transfer files via curl
+curl -T $ROMDIR/$FILENAME $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+curl -T $ROMDIR/$RECOVERY $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+curl -T $TMPDIR/$JSON $FTPDIRJSON --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG

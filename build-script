@@ -1,0 +1,45 @@
+#!/bin/bash
+
+## vars
+DATE=$(date +"%Y%m%d")
+LOG="build-script-log-$DATE.txt"
+BUILDDIR="$HOME/android/lineage"
+LOGDIR="$HOME/LOGS"
+ROMDIR="$HOME/ROM"
+TMPDIR="$HOME/TEMP"
+FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
+RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"
+
+## setup environment
+cd $BUILDDIR
+source build/envsetup.sh
+export USE_CCACHE=1
+export CCACHE_EXEC=/usr/bin/ccache
+ccache -M 32G
+export CCACHE_COMPRESS=1
+export TIMEFORMAT='%3lR'
+breakfast $1
+
+## sync repos
+if [ $2 = sync ]
+    then
+        repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify
+fi
+
+## begin build process and write duration stats to logfile
+echo "begining build process for $1" >> $LOGDIR/$LOG 2>&1
+( time brunch $1 ) >> $LOGDIR/$LOG 2>&1
+
+## detect if zip was created, then move to HOME
+if [ -e "$OUT"/lineage-*.zip ]
+    then
+        ## move zip and img
+        echo "moving ROM zip and RECOVERY image"
+        mv $OUT/lineage-*zip "$ROMDIR/"
+        mv $OUT/recovery.img "$ROMDIR/$RECOVERY"
+        cp $T/out/build_date.txt "$TEMPDIR/build_date_$1.txt"
+fi
+
+mka installclean target-files-package otatools
+
+cd $HOME
