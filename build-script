@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPTNAME=$(basename $BASH_SOURCE)
 
 if [ -z $1 ]
 then exit 2
@@ -15,7 +16,6 @@ export USE_CCACHE=1
 export CCACHE_EXEC=/usr/bin/ccache
 ccache -M 32G
 export CCACHE_COMPRESS=1
-export TIMEFORMAT='%3lR'
 breakfast $1
 
 ## sync repos

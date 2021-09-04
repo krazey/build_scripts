@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPTNAME=$(basename $BASH_SOURCE)
+
 ## import vars
 source build-config.txt
 

@@ -1,13 +1,12 @@
 ## do not edit
 SCRIPT=$(readlink -f $0)
-SCRIPTNAME=$(basename $BASH_SOURCE)
+DATE="$(date +"%Y%m%d")"
 SCRIPTPATH=`dirname $SCRIPT`
 LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
 
 ## variables
 DEVICES="crownlte,star2lte,starlte"
-DATE=$(date +"%Y%m%d")
 JSON="$1.json"
 BUILDDIR="$HOME/android/lineage"
 LOGDIR="$SCRIPTPATH/LOGS"
