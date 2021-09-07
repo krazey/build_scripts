@@ -7,8 +7,6 @@ LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
 TMPFILE="$1.txt"
 JSON="$1.json"
-TYPE_ROM="unofficial"
-TYPE_IMG="recovery"
 
 ## variables
 DEVICES="crownlte,star2lte,starlte"
