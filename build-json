@@ -37,7 +37,7 @@ do
             IFS='-'
             read -a rom_array <<< "$FILENAME"
             read -a img_array <<< "$RECOVERY"
-            IFS=''
+            unset IFS
             echo  { '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$FILENAME'"', '"'filepath'"': '"'/$FILENAME'"', \
                     '"'sha256'"': '"'$SHA256HASH'"', '"'size'"': $FILESIZE, '"'type'"': '"'${rom_array[3]}'"', '"'version'"': '"'${rom_array[1]}'"', '"'recovery'"': { \
                     '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$RECOVERY'"', '"'filepath'"': '"'/$RECOVERY'"', \
