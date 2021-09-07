@@ -1,0 +1,63 @@
+#!/bin/bash
+# creating builds.json for infra/updater after uploading files
+SCRIPTNAME=$(basename $BASH_SOURCE)
+DEBUG=0
+
+## import vars
+source build-config.txt
+
+## temp vars
+product_device=(${DEVICES//,/ })
+IN=0
+ARRAY="RECOVERY,FILESIZE_IMG,MD5HASH_IMG,TYPE_IMG,FILENAME,FILESIZE,MD5HASH,BUILD_DATETIME,TYPE_ROM,BUILD_DATE"
+array=(${ARRAY//,/ })
+NUM=0
+LINE=1
+
+## start
+rm builds.json
+echo { >> builds.json
+while [ 1 ]
+do
+    if [ -z ${product_device[$IN]} ]
+    then break
+    else
+        if [ $LINE = 1 ]
+        then echo '"'${product_device[$IN]}'"': [ >> builds.json
+        fi
+        declare -A ${array[$NUM]}=$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)
+        if [ $DEBUG = 1 ]
+        then echo ${product_device[$IN]}: NUM: $NUM, LINE: $LINE, array: ${array[$NUM]}: ${!array[$NUM]}  && sleep 0.2
+        fi
+        if [ $NUM -le 8 ]
+        then
+            NUM=$(( NUM+1 ))
+            LINE=$(( $LINE+1 ))
+        else
+            IFS='-'
+            read -a rom_array <<< "$FILENAME"
+            IFS=''
+            echo  { '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$FILENAME'"', '"'filepath'"': '"'/$FILENAME'"', \
+                    '"'sha256'"': '"'$MD5HASH'"', '"'size'"': $FILESIZE, '"'type'"': '"'$TYPE_ROM'"', '"'version'"': '"'${rom_array[1]}'"', '"'recovery'"': { \
+                    '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$RECOVERY'"', '"'filepath'"': '"'/$RECOVERY'"', \
+                    '"'sha256'"': '"'$MD5HASH_IMG'"', '"'size'"': $FILESIZE_IMG, '"'type'"': '"'$TYPE_IMG'"', '"'version'"': '"'${rom_array[1]}'"' \
+                  } >> builds.json
+            NUM=0
+            LINE=$(( $LINE+1 ))
+            if [ -z "$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)" ]
+            then
+                IN=$IN+1
+                LINE=1
+                if [ -z ${product_device[$IN]} ]
+                then echo } ] >> builds.json
+                else echo } ], >> builds.json
+                fi 
+            else
+                echo }, >> builds.json
+            fi
+        fi
+    fi
+done
+
+## end
+echo } >> builds.json
