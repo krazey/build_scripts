@@ -12,26 +12,26 @@ source build-config.txt
 cp $TMPDIR/$TMPFILE $TMPDIR/re_$TMPFILE
 ex -s +%g/^/m0 +wq $TMPDIR/re_$TMPFILE
 BUILD_DATETIME_OLD="$(sed -n '8 p' $TMPDIR/re_$TMPFILE)"
-MD5HASH_OLD="$(sed -n '7 p' $TMPDIR/re_$TMPFILE)"
+SHA256HASH_OLD="$(sed -n '7 p' $TMPDIR/re_$TMPFILE)"
 FILESIZE_OLD="$(sed -n '6 p' $TMPDIR/re_$TMPFILE)"
 FILENAME_OLD="$(sed -n '5 p' $TMPDIR/re_$TMPFILE)"
 
 ## get new data
 BUILD_DATETIME="$(cat $TMPDIR/build_date_$1.txt)"
-MD5HASH="$(sha256sum $ROMDIR/$FILENAME | awk '{print $1}')"
+SHA256HASH="$(sha256sum $ROMDIR/$FILENAME | awk '{print $1}')"
 FILESIZE="$(du -b $ROMDIR/$FILENAME | awk '{print $1}')"
-MD5HASH_IMG="$(sha256sum $ROMDIR/$RECOVERY | awk '{print $1}')"
+SHA256HASH_IMG="$(sha256sum $ROMDIR/$RECOVERY | awk '{print $1}')"
 FILESIZE_IMG="$(du -b $ROMDIR/$RECOVERY | awk '{print $1}')"
 
 ## generate new json
 sed "s/"$BUILD_DATETIME_OLD"/"$BUILD_DATETIME"/" $TMPDIR/$JSON > "$TMPDIR/temp1.json"
-sed "s/"$MD5HASH_OLD"/"$MD5HASH"/" $TMPDIR/temp1.json > "$TMPDIR/temp2.json"
+sed "s/"$SHA256HASH_OLD"/"$SHA256HASH"/" $TMPDIR/temp1.json > "$TMPDIR/temp2.json"
 sed "s/"$FILESIZE_OLD"/"$FILESIZE"/" $TMPDIR/temp2.json > "$TMPDIR/temp3.json"
 sed "s/"$FILENAME_OLD"/"$FILENAME"/" $TMPDIR/temp3.json > "$TMPDIR/temp4.json"
 cp $TMPDIR/temp4.json $TMPDIR/$JSON
 rm $TMPDIR/temp*.json
 echo $1: builddate $BUILD_DATETIME_OLD to $BUILD_DATETIME >> $LOGDIR/$LOG
-echo $1: md5hash $MD5HASH_OLD to $MD5HASH >> $LOGDIR/$LOG
+echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
 echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
 echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
 
@@ -39,11 +39,11 @@ echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
 echo $BUILD_DATE >> "$TMPDIR/$TMPFILE"
 echo $TYPE_ROM >> "$TMPDIR/$TMPFILE"
 echo $BUILD_DATETIME >> "$TMPDIR/$TMPFILE"
-echo $MD5HASH >> "$TMPDIR/$TMPFILE"
+echo $SHA256HASH >> "$TMPDIR/$TMPFILE"
 echo $FILESIZE >> "$TMPDIR/$TMPFILE"
 echo $FILENAME >> "$TMPDIR/$TMPFILE"
 echo $TYPE_IMG >> "$TMPDIR/$TMPFILE"
-echo $MD5HASH_IMG >> "$TMPDIR/$TMPFILE"
+echo $SHA256HASH_IMG >> "$TMPDIR/$TMPFILE"
 echo $FILESIZE_IMG >> "$TMPDIR/$TMPFILE"
 echo $RECOVERY >> "$TMPDIR/$TMPFILE"
 
