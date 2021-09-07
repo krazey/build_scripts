@@ -1,0 +1,58 @@
+#! /bin/bash
+# generating devices logs for build-json
+
+## import vars
+source build-config.txt
+
+## temp vars
+product_device=(${DEVICES//,/ })
+IN=0
+NUM=0
+
+## list
+i=0
+while read line
+do
+    array_zip[ $i ]="$line"
+    (( i++ ))
+done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.zip)
+i=0
+while read line
+do
+    array_img[ $i ]="$line"
+    (( i++ ))
+done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.img)
+
+## sort list
+IFS=$'\n' sorted_zip=($(sort <<<"${array_zip[*]}"))
+IFS=$'\n' sorted_img=($(sort <<<"${array_img[*]}"))
+unset IFS
+
+## generate log
+while [ 1 ]
+do
+    if [ -z ${sorted_img[$NUM]} ]
+    then
+        cp $TMPDIR/${product_device[$IN]}.txt $TMPDIR/re_${product_device[$IN]}.txt
+        ex -s +%g/^/m0 +wq $TMPDIR/${product_device[$IN]}.txt
+        IN=$(( IN+1 ))
+        NUM=0
+        if [ -z ${product_device[$IN]} ]
+        then break
+        fi
+    else
+        IFS='-' read -a segment_zip <<< "${sorted_zip[$NUM]}"
+        IFS='-' read -a segment_img <<< "${sorted_img[$NUM]}"
+        unset IFS
+        ## data
+        date -d ${segment_zip[2]} +%Y-%m-%d >> $TMPDIR/${product_device[$IN]}.txt
+        date -d ${segment_zip[2]} +%s >> $TMPDIR/${product_device[$IN]}.txt
+        sha256sum $ROMDIR/${sorted_zip[0]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
+        du -b $ROMDIR/${sorted_zip[0]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
+        echo ${sorted_zip[0]} >> $TMPDIR/${product_device[$IN]}.txt
+        sha256sum $ROMDIR/${sorted_img[0]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
+        du -b $ROMDIR/${sorted_img[0]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
+        echo ${sorted_img[0]} >> $TMPDIR/${product_device[$IN]}.txt
+        NUM=$(( NUM+1 ))
+    fi
+done

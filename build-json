@@ -1,5 +1,5 @@
 #!/bin/bash
-# creating builds.json for infra/updater after uploading files
+# creating builds.json for infra/updater after uploading files or "build-genlog"
 SCRIPTNAME=$(basename $BASH_SOURCE)
 DEBUG=0
 
