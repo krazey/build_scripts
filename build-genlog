@@ -34,7 +34,7 @@ do
     if [ -z ${sorted_img[$NUM]} ]
     then
         cp $TMPDIR/${product_device[$IN]}.txt $TMPDIR/re_${product_device[$IN]}.txt
-        ex -s +%g/^/m0 +wq $TMPDIR/${product_device[$IN]}.txt
+        ex -s +%g/^/m0 +wq $TMPDIR/re_${product_device[$IN]}.txt
         IN=$(( IN+1 ))
         NUM=0
         if [ -z ${product_device[$IN]} ]
