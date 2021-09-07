@@ -1,20 +1,23 @@
 ## do not edit
 SCRIPT=$(readlink -f $0)
 DATE="$(date +"%Y%m%d")"
+BUILD_DATE="$(date +"%Y-%m-%d")"
 SCRIPTPATH=`dirname $SCRIPT`
 LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
+TMPFILE="$1.txt"
+JSON="$1.json"
+TYPE_ROM="unofficial"
+TYPE_IMG="recovery"
 
 ## variables
 DEVICES="crownlte,star2lte,starlte"
-JSON="$1.json"
 BUILDDIR="$HOME/android/lineage"
 LOGDIR="$SCRIPTPATH/LOGS"
 ROMDIR="$SCRIPTPATH/ROM"
 TMPDIR="$SCRIPTPATH/TEMP"
-TMPFILE="old_variables_$1.txt"
 FTPFILE="netrc"
-FTPDIRROM="ftp://domain.tld/files/lineage/$1/18.1/"
+FTPDIRROM="ftp://domain.tld/files/lineage/images/"
 FTPDIRJSON="ftp://domain.tld/files/lineage/"
 FILENAME="lineage-18.1-$DATE-UNOFFICIAL-$1.zip"
-RECOVERY="lineage-18.1-$DATE-UNOFFICIAL-$1-recovery.img"
+RECOVERY="lineage-18.1-$DATE-RECOVERY-$1.img"
