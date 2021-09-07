@@ -41,7 +41,7 @@ if [ -e "$OUT"/lineage-*.zip ]
     then
         ## move zip and img
         echo "moving ROM zip and RECOVERY image"
-        mv $OUT/lineage-*zip "$ROMDIR/"
+        mv $OUT/lineage-*zip "$ROMDIR/$FILENAME"
         mv $OUT/recovery.img "$ROMDIR/$RECOVERY"
         cp $T/out/build_date.txt "$TMPDIR/build_date_$1.txt"
 fi
