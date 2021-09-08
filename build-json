@@ -8,11 +8,12 @@ source build-config.txt
 
 ## temp vars
 product_device=(${DEVICES//,/ })
-IN=0
 ARRAY="RECOVERY,FILESIZE_IMG,SHA256HASH_IMG,FILENAME,FILESIZE,SHA256HASH,BUILD_DATETIME,BUILD_DATE"
 array=(${ARRAY//,/ })
+IN=0
 NUM=0
 LINE=1
+ENDOFLINE=32
 INIT=1
 
 ## start
@@ -28,9 +29,9 @@ do
             echo } ] >> builds.json
             INIT=$(( $INIT-1 ))
         else
-             if [ $LINE = 1 ]
-             then echo } ], >> builds.json
-             fi
+            if [ $LINE = 1 ]
+            then echo } ], >> builds.json
+            fi
         fi
         declare -A ${array[$NUM]}=$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)
         if [ $DEBUG = 1 ]
@@ -52,7 +53,7 @@ do
                   } >> builds.json
             NUM=0
             LINE=$(( $LINE+1 ))
-            if [ -z "$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)" ]
+            if [ -z "$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)" ] || [ $LINE -gt $ENDOFLINE ]
             then
                 echo '"'${product_device[$IN]}'"': [ >> builds.json
                 IN=$IN+1
