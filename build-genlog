@@ -10,6 +10,22 @@ product_device=(${DEVICES//,/ })
 IN=0
 NUM=0
 
+## remove old logs
+if [ -f "$TMPDIR/${product_device[0]}.txt" ]
+then
+    if [ "$1" = "del" ]
+    then
+        while [ 1 ]
+        do
+            if [ -z ${product_device[$IN]} ]
+            then IN=0 && break
+            else rm $TMPDIR/${product_device[$IN]}.txt $TMPDIR/re_${product_device[$IN]}.txt && IN=$IN+1
+            fi
+        done
+    else echo 'Old device logs found, use '"'$SCRIPTNAME del'"' to delete. Exit.' && exit 0
+    fi
+fi
+
 ## bash function
 sort_list_function () {
     ## list
