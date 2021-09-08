@@ -1,5 +1,6 @@
 #! /bin/bash
 # generating devices logs for build-json
+SCRIPTNAME=$(basename $BASH_SOURCE)
 
 ## import vars
 source build-config.txt
@@ -24,8 +25,9 @@ do
 done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.img)
 
 ## sort list
-IFS=$'\n' sorted_zip=($(sort <<<"${array_zip[*]}"))
-IFS=$'\n' sorted_img=($(sort <<<"${array_img[*]}"))
+IFS=$'\n'
+sorted_zip=($(sort <<<"${array_zip[*]}"))
+sorted_img=($(sort <<<"${array_img[*]}"))
 unset IFS
 
 ## generate log
@@ -61,8 +63,9 @@ do
         then break
         fi
     else
-        IFS='-' read -a segment_zip <<< "${sorted_zip[$NUM]}"
-        IFS='-' read -a segment_img <<< "${sorted_img[$NUM]}"
+        IFS='-'
+        read -a segment_zip <<< "${sorted_zip[$NUM]}"
+        read -a segment_img <<< "${sorted_img[$NUM]}"
         unset IFS
         ## data
         date -d ${segment_zip[2]} +%Y-%m-%d >> $TMPDIR/${product_device[$IN]}.txt
