@@ -10,26 +10,31 @@ product_device=(${DEVICES//,/ })
 IN=0
 NUM=0
 
-## list
-i=0
-while read line
-do
-    array_zip[ $i ]="$line"
-    (( i++ ))
-done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.zip)
-i=0
-while read line
-do
-    array_img[ $i ]="$line"
-    (( i++ ))
-done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.img)
+## bash function
+sort_list_function () {
+    ## list
+    i=0
+    while read line
+    do
+        array_zip[ $i ]="$line"
+        (( i++ ))
+    done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.zip)
+    i=0
+    while read line
+    do
+        array_img[ $i ]="$line"
+        (( i++ ))
+    done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.img)
 
-## sort list
-IFS=$'\n'
-sorted_zip=($(sort <<<"${array_zip[*]}"))
-sorted_img=($(sort <<<"${array_img[*]}"))
-unset IFS
+    ## sort list
+    IFS=$'\n'
+    sorted_zip=($(sort <<<"${array_zip[*]}"))
+    sorted_img=($(sort <<<"${array_img[*]}"))
+    unset IFS
+}
 
+## start
+sort_list_function
 ## generate log
 while [ 1 ]
 do
@@ -40,24 +45,8 @@ do
         IN=$(( IN+1 ))
         NUM=0
 
-        ## list
-        i=0
-        while read line
-        do
-            array_zip[ $i ]="$line"
-            (( i++ ))
-        done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.zip)
-        i=0
-        while read line
-        do
-            array_img[ $i ]="$line"
-            (( i++ ))
-        done < <(find $ROMDIR -printf "%f\n" | grep ${product_device[$IN]}.img)
-
-        ## sort list
-        IFS=$'\n' sorted_zip=($(sort <<<"${array_zip[*]}"))
-        IFS=$'\n' sorted_img=($(sort <<<"${array_img[*]}"))
-        unset IFS
+        ## call function
+        sort_list_function
 
         if [ -z ${product_device[$IN]} ]
         then break
