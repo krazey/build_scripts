@@ -38,6 +38,9 @@ sort_list_function
 ## generate log
 while [ 1 ]
 do
+    if [ $NUM -eq 0 ]
+    then echo "Generate log, total builds of ${product_device[$IN]}: ${#array_img[@]}, total devices: ${#product_device[@]}"
+    fi
     if [ -z ${sorted_img[$NUM]} ]
     then
         cp $TMPDIR/${product_device[$IN]}.txt $TMPDIR/re_${product_device[$IN]}.txt
