@@ -39,7 +39,7 @@ then
     cd $OUT && BUILD=`ls lineage-*.zip` && FILENAME=${BUILD,,} && cd $T
     ## generate recovery image name from build.zip
     IFS='-' && read -a name_array <<< "$FILENAME" && unset IFS
-    FILENAME_IMG="${name_array[0]}-${name_array[1]}-${name_array[2]}-recovery-${name_array[4]}.img"
+    FILENAME_IMG="${name_array[0]}-${name_array[1]}-${name_array[2]}-recovery-$1.img"
     ## move zip and img
     echo "moving ROM zip and RECOVERY image"
     mv $OUT/lineage-*zip "$ROMDIR/$FILENAME"
