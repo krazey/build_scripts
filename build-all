@@ -29,16 +29,16 @@ else
     then
         echo no upload, variable not set
     else
-        if [ "$1" = "upload" ]
-        then
-            echo "--start--upload--${product_device[$IN]}" >> $LOGDIR/$LOG
-            ( time ./build-upload ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
-            echo "--end--upload--/${product_device[$IN]}" >> $LOGDIR/$LOG
-        elif [ "$1" = "upload" ] && [ "$2" = "infra" ]
+        if [ "$1" = "upload" ] && [ "$2" = "infra" ]
         then
             echo "--start--upload+infra-${product_device[$IN]}" >> $LOGDIR/$LOG
             ( time ./build-upload ${product_device[$IN]} infra ) >> $LOGDIR/$LOG 2>&1
             echo "--end--upload+infra-/${product_device[$IN]}" >> $LOGDIR/$LOG
+        elif [ "$1" = "upload" ]
+        then
+            echo "--start--upload--${product_device[$IN]}" >> $LOGDIR/$LOG
+            ( time ./build-upload ${product_device[$IN]} ) >> $LOGDIR/$LOG 2>&1
+            echo "--end--upload--/${product_device[$IN]}" >> $LOGDIR/$LOG
         else
             echo no upload, fix typo: $SCRIPTNAME $1 $2
         fi
