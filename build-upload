@@ -39,5 +39,14 @@ echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
 ## transfer files via curl
 echo "uploading $FILENAME, $FILENAME_IMG and $JSON" >> $LOGDIR/$LOG
 curl -T $ROMDIR/$FILENAME $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+curl -T $ROMDIR/$FILENAME_IMG $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $TMPDIR/$JSON $FTPDIRJSON --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 
+if [ $BUILDDATE = $BUILDDATE_OLD ]
+then
+    echo "remove duplicate build from log" >> $LOGDIR/$LOG
+    sed "9,16d" $TMPDIR/re_$1.txt > "$TMPDIR/re_$1_temp.txt"
+    cp $TMPDIR/re_$1_temp.txt $TMPDIR/re_$1.txt
+    cp $TMPDIR/re_$1.txt $TMPDIR/$1.txt
+    ex -s +%g/^/m0 +wq $TMPDIR/$1.txt
+fi
