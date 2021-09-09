@@ -68,4 +68,4 @@ done
 ## end
 echo { >> $INFRAUPDATER/nginx/builds.json
 ex -s +%g/^/m0 +wq $INFRAUPDATER/nginx/builds.json
-cd $INFRAUPDATER && docker-compose down && docker-compose up -d
+cd $INFRAUPDATER && docker-compose down && docker-compose up -d && cd $SCRIPTPATH
