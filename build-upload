@@ -8,44 +8,36 @@ fi
 ## import vars
 source build-config.txt
 
-## temp vars
-cp $TMPDIR/$TMPFILE $TMPDIR/re_$TMPFILE
-ex -s +%g/^/m0 +wq $TMPDIR/re_$TMPFILE
-BUILD_DATETIME_OLD="$(sed -n '8 p' $TMPDIR/re_$TMPFILE)"
-SHA256HASH_OLD="$(sed -n '7 p' $TMPDIR/re_$TMPFILE)"
-FILESIZE_OLD="$(sed -n '6 p' $TMPDIR/re_$TMPFILE)"
-FILENAME_OLD="$(sed -n '5 p' $TMPDIR/re_$TMPFILE)"
+## get data from old build
+cp $TMPDIR/$1.txt $TMPDIR/re_$1.txt
+ex -s +%g/^/m0 +wq $TMPDIR/re_$1.txt
+BUILDDATE_OLD="$(sed -n '16 p' $TMPDIR/re_$1.txt)"
+BUILD_DATETIME_OLD="$(sed -n '15 p' $TMPDIR/re_$1.txt)"
+SHA256HASH_OLD="$(sed -n '14 p' $TMPDIR/re_$1.txt)"
+FILESIZE_OLD="$(sed -n '13 p' $TMPDIR/re_$1.txt)"
+FILENAME_OLD="$(sed -n '12 p' $TMPDIR/re_$1.txt)"
 
-## get new data
-BUILD_DATETIME="$(cat $TMPDIR/build_date_$1.txt)"
-SHA256HASH="$(sha256sum $ROMDIR/$FILENAME | awk '{print $1}')"
-FILESIZE="$(du -b $ROMDIR/$FILENAME | awk '{print $1}')"
-SHA256HASH_IMG="$(sha256sum $ROMDIR/$RECOVERY | awk '{print $1}')"
-FILESIZE_IMG="$(du -b $ROMDIR/$RECOVERY | awk '{print $1}')"
+## get new data from latest build
+BUILDDATE="$(sed -n '8 p' $TMPDIR/re_$1.txt)"
+BUILD_DATETIME="$(sed -n '7 p' $TMPDIR/re_$1.txt)"
+SHA256HASH="$(sed -n '6 p' $TMPDIR/re_$1.txt)"
+FILESIZE="$(sed -n '5 p' $TMPDIR/re_$1.txt)"
+FILENAME="$(sed -n '4 p' $TMPDIR/re_$1.txt)"
+FILENAME_IMG="$(sed -n '1 p' $TMPDIR/re_$1.txt)"
 
 ## generate new json
 sed "s/"$BUILD_DATETIME_OLD"/"$BUILD_DATETIME"/" $TMPDIR/$JSON > "$TMPDIR/temp1.json"
 sed "s/"$SHA256HASH_OLD"/"$SHA256HASH"/" $TMPDIR/temp1.json > "$TMPDIR/temp2.json"
 sed "s/"$FILESIZE_OLD"/"$FILESIZE"/" $TMPDIR/temp2.json > "$TMPDIR/temp3.json"
 sed "s/"$FILENAME_OLD"/"$FILENAME"/" $TMPDIR/temp3.json > "$TMPDIR/temp4.json"
-cp $TMPDIR/temp4.json $TMPDIR/$JSON
-rm $TMPDIR/temp*.json
+cp $TMPDIR/temp4.json $TMPDIR/$JSON && rm $TMPDIR/temp*.json
 echo $1: builddate $BUILD_DATETIME_OLD to $BUILD_DATETIME >> $LOGDIR/$LOG
 echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
 echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
 echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
 
-## store new data in tmpfile
-echo $BUILD_DATE >> "$TMPDIR/$TMPFILE"
-echo $BUILD_DATETIME >> "$TMPDIR/$TMPFILE"
-echo $SHA256HASH >> "$TMPDIR/$TMPFILE"
-echo $FILESIZE >> "$TMPDIR/$TMPFILE"
-echo $FILENAME >> "$TMPDIR/$TMPFILE"
-echo $SHA256HASH_IMG >> "$TMPDIR/$TMPFILE"
-echo $FILESIZE_IMG >> "$TMPDIR/$TMPFILE"
-echo $RECOVERY >> "$TMPDIR/$TMPFILE"
-
 ## transfer files via curl
+echo "uploading $FILENAME, $FILENAME_IMG and $JSON" >> $LOGDIR/$LOG
 curl -T $ROMDIR/$FILENAME $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
-curl -T $ROMDIR/$RECOVERY $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $TMPDIR/$JSON $FTPDIRJSON --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+
