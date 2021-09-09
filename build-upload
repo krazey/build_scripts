@@ -23,6 +23,7 @@ BUILD_DATETIME="$(sed -n '7 p' $TMPDIR/re_$1.txt)"
 SHA256HASH="$(sed -n '6 p' $TMPDIR/re_$1.txt)"
 FILESIZE="$(sed -n '5 p' $TMPDIR/re_$1.txt)"
 FILENAME="$(sed -n '4 p' $TMPDIR/re_$1.txt)"
+SHA256HASH_IMG="$(sed -n '3 p' $TMPDIR/re_$1.txt)"
 FILENAME_IMG="$(sed -n '1 p' $TMPDIR/re_$1.txt)"
 
 ## generate new json
@@ -36,10 +37,16 @@ echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
 echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
 echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
 
+## generate sha256 log
+echo $SHA256HASH $FILENAME > $ROMDIR/$FILENAME.txt
+echo $SHA256HASH_IMG $FILENAME_IMG > $ROMDIR/$FILENAME_IMG.txt
+
 ## transfer files via curl
-echo "uploading $FILENAME, $FILENAME_IMG and $JSON" >> $LOGDIR/$LOG
+echo "uploading $FILENAME, $FILENAME_IMG, SHA256-Logs and $JSON" >> $LOGDIR/$LOG
 curl -T $ROMDIR/$FILENAME $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+curl -T $ROMDIR/$FILENAME.txt $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $ROMDIR/$FILENAME_IMG $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
+curl -T $ROMDIR/$FILENAME_IMG.txt $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $TMPDIR/$JSON $FTPDIRJSON --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 
 if [ $BUILDDATE = $BUILDDATE_OLD ]
