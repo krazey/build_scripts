@@ -43,6 +43,6 @@ else
             echo no upload, fix typo: $SCRIPTNAME $1 $2
         fi
     fi
-    IN=$IN+1
+    (( IN++ ))
 fi
 done

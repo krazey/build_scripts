@@ -53,8 +53,7 @@ do
     then
         cp $TMPDIR/${product_device[$IN]}.txt $TMPDIR/re_${product_device[$IN]}.txt
         ex -s +%g/^/m0 +wq $TMPDIR/re_${product_device[$IN]}.txt
-        IN=$(( IN+1 ))
-        NUM=0
+        (( IN++ )) && NUM=0
         if [ -z ${product_device[$IN]} ]; then break; fi
         ## call function
         sort_list_function
@@ -69,6 +68,6 @@ do
         sha256sum $ROMDIR/${sorted_img[$NUM]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
         du -b $ROMDIR/${sorted_img[$NUM]} | awk '{print $1}' >> $TMPDIR/${product_device[$IN]}.txt
         echo ${sorted_img[$NUM]} >> $TMPDIR/${product_device[$IN]}.txt
-        NUM=$(( NUM+1 ))
+        (( NUM++ ))
     fi
 done

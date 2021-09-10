@@ -46,8 +46,8 @@ then
     mv $OUT/recovery.img "$ROMDIR/$FILENAME_IMG"
     ## log data
     date -d ${name_array[2]} +%Y-%m-%d >> $TMPDIR/$1.txt
-    BUILD_DATETIME="$(cat $T/out/build_date.txt)"
-    echo $BUILD_DATETIME >> $TMPDIR/$1.txt
+    BUILD_DATE_UNIXTIME="$(cat $T/out/build_date.txt)"
+    echo $BUILD_DATE_UNIXTIME >> $TMPDIR/$1.txt
     sha256sum $ROMDIR/$FILENAME | awk '{print $1}' >> $TMPDIR/$1.txt
     du -b $ROMDIR/$FILENAME | awk '{print $1}' >> $TMPDIR/$1.txt
     echo $FILENAME >> $TMPDIR/$1.txt

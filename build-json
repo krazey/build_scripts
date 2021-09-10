@@ -8,7 +8,7 @@ source build-config.txt
 
 ## temp vars
 product_device=(${DEVICES//,/ })
-ARRAY="RECOVERY,FILESIZE_IMG,SHA256HASH_IMG,FILENAME,FILESIZE,SHA256HASH,BUILD_DATETIME,BUILD_DATE"
+ARRAY="FILENAME_IMG,FILESIZE_IMG,SHA256HASH_IMG,FILENAME,FILESIZE,SHA256HASH,BUILD_DATE_UNIXTIME,BUILD_DATE"
 array=(${ARRAY//,/ })
 IN=0
 NUM=0
@@ -25,9 +25,7 @@ do
     then break
     else
         if [ $INIT = 1 ]
-        then
-            echo } ] >> $INFRAUPDATER/nginx/builds.json
-            INIT=$(( INIT-1 ))
+        then echo } ] >> $INFRAUPDATER/nginx/builds.json && (( INIT-- ))
         else
             if [ $LINE = 1 ]
             then echo } ], >> $INFRAUPDATER/nginx/builds.json
@@ -38,26 +36,19 @@ do
         then echo ${product_device[$IN]}: NUM: $NUM, LINE: $LINE, array: ${array[$NUM]}: ${!array[$NUM]}  && sleep 0.2
         fi
         if [ $NUM -le 6 ]
-        then
-            NUM=$(( NUM+1 ))
-            LINE=$(( LINE+1 ))
+        then (( NUM++ )) && (( LINE++ ))
         else
-            IFS='-'
-            read -a rom_array <<< "$FILENAME"
-            read -a img_array <<< "$RECOVERY"
-            unset IFS
-            echo  { '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$FILENAME'"', '"'filepath'"': '"'/$FILENAME'"', \
+            IFS='-'; read -a rom_array <<< "$FILENAME"; read -a img_array <<< "$FILENAME_IMG"; unset IFS
+            echo  { '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATE_UNIXTIME, '"'filename'"': '"'$FILENAME'"', '"'filepath'"': '"'/$FILENAME'"', \
                     '"'sha256'"': '"'$SHA256HASH'"', '"'size'"': $FILESIZE, '"'type'"': '"'${rom_array[3]}'"', '"'version'"': '"'${rom_array[1]}'"', '"'recovery'"': { \
-                    '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATETIME, '"'filename'"': '"'$RECOVERY'"', '"'filepath'"': '"'/$RECOVERY'"', \
+                    '"'date'"': '"'$BUILD_DATE'"', '"'datetime'"': $BUILD_DATE_UNIXTIME, '"'filename'"': '"'$FILENAME_IMG'"', '"'filepath'"': '"'/$FILENAME_IMG'"', \
                     '"'sha256'"': '"'$SHA256HASH_IMG'"', '"'size'"': $FILESIZE_IMG, '"'type'"': '"'${img_array[3]}'"', '"'version'"': '"'${img_array[1]}'"' \
                   } >> $INFRAUPDATER/nginx/builds.json
-            NUM=0
-            LINE=$(( LINE+1 ))
+            (( LINE++ )) && NUM=0
             if [ -z "$(sed -n ''$LINE' p' $TMPDIR/re_${product_device[$IN]}.txt)" ] || [ $LINE -gt $ENDOFLINE ]
             then
                 echo '"'${product_device[$IN]}'"': [ >> $INFRAUPDATER/nginx/builds.json
-                IN=$(( IN+1 ))
-                LINE=1
+                (( IN++ )) && LINE=1
             else
                 echo }, >> $INFRAUPDATER/nginx/builds.json
             fi
