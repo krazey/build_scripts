@@ -1,5 +1,5 @@
 #!/bin/bash
-# creating $INFRAUPDATER/nginx/builds.json for infra/updater after uploading files or "build-genlog"
+## creating builds.json for infra/updater after uploading files or "build-genlog"
 SCRIPTNAME=$(basename $BASH_SOURCE)
 DEBUG=0
 
@@ -68,4 +68,6 @@ done
 ## end
 echo { >> $INFRAUPDATER/nginx/builds.json
 ex -s +%g/^/m0 +wq $INFRAUPDATER/nginx/builds.json
-cd $INFRAUPDATER && docker-compose down && docker-compose up -d && cd $SCRIPTPATH
+if [[ $1 != test ]]
+then cd $INFRAUPDATER && docker-compose down && docker-compose up -d && cd $SCRIPTPATH
+fi

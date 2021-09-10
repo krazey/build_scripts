@@ -1,12 +1,9 @@
 ## do not edit
 SCRIPT=$(readlink -f $0)
 DATE="$(date +"%Y%m%d")"
-BUILD_DATE="$(date +"%Y-%m-%d")"
 SCRIPTPATH=`dirname $SCRIPT`
 LOG="$SCRIPTNAME-log-$DATE.txt"
 export TIMEFORMAT='%3lR'
-TMPFILE="$1.txt"
-JSON="$1.json"
 
 ## variables
 DEVICES="crownlte,star2lte,starlte"
