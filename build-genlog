@@ -32,11 +32,11 @@ sort_list_function () {
     i=0
     while read line
     do array_zip[ $i ]="$line"; (( i++ ))
-    done < <(find $ROMDIR -size +1M -printf "%f\n" | grep ${product_device[$IN]}.zip)
+    done < <(find $ROMDIR -type f \( -name "*.zip" \) -printf "%f\n" | grep ${product_device[$IN]})
     i=0
     while read line
     do array_img[ $i ]="$line"; (( i++ ))
-    done < <(find $ROMDIR -size +1M -printf "%f\n" | grep ${product_device[$IN]}.img)
+    done < <(find $ROMDIR -type f \( -name "*.img" \) -printf "%f\n" | grep ${product_device[$IN]})
     ## sort list
     IFS=$'\n'; sorted_zip=($(sort <<<"${array_zip[*]}")); sorted_img=($(sort <<<"${array_img[*]}")); unset IFS
 }
