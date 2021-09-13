@@ -11,31 +11,47 @@ source build-config.txt
 ## get data from old build
 cp $TMPDIR/$1.txt $TMPDIR/re_$1.txt
 ex -s +%g/^/m0 +wq $TMPDIR/re_$1.txt
-BUILDDATE_OLD="$(sed -n '16 p' $TMPDIR/re_$1.txt)"
-BUILD_DATETIME_OLD="$(sed -n '15 p' $TMPDIR/re_$1.txt)"
+BUILD_DATE_OLD="$(sed -n '16 p' $TMPDIR/re_$1.txt)"
+BUILD_DATE_UNIXTIME_OLD="$(sed -n '15 p' $TMPDIR/re_$1.txt)"
 SHA256HASH_OLD="$(sed -n '14 p' $TMPDIR/re_$1.txt)"
 FILESIZE_OLD="$(sed -n '13 p' $TMPDIR/re_$1.txt)"
 FILENAME_OLD="$(sed -n '12 p' $TMPDIR/re_$1.txt)"
+## lineage-18.1-20210913-unofficial-starlte.zip
+## [0] = lineage, [1] = 18.1, [2] = 20210913, [3] = unofficial, [4] = starlte.zip
+IFS='-'; read -a rom_array_old <<< "$FILENAME_OLD"; unset IFS
 
 ## get new data from latest build
-BUILDDATE="$(sed -n '8 p' $TMPDIR/re_$1.txt)"
-BUILD_DATETIME="$(sed -n '7 p' $TMPDIR/re_$1.txt)"
+BUILD_DATE="$(sed -n '8 p' $TMPDIR/re_$1.txt)"
+BUILD_DATE_UNIXTIME="$(sed -n '7 p' $TMPDIR/re_$1.txt)"
 SHA256HASH="$(sed -n '6 p' $TMPDIR/re_$1.txt)"
 FILESIZE="$(sed -n '5 p' $TMPDIR/re_$1.txt)"
 FILENAME="$(sed -n '4 p' $TMPDIR/re_$1.txt)"
 SHA256HASH_IMG="$(sed -n '3 p' $TMPDIR/re_$1.txt)"
 FILENAME_IMG="$(sed -n '1 p' $TMPDIR/re_$1.txt)"
+IFS='-'; read -a rom_array <<< "$FILENAME"; unset IFS
 
 ## generate new json
-sed "s/"$BUILD_DATETIME_OLD"/"$BUILD_DATETIME"/" $TMPDIR/$1.json > "$TMPDIR/temp1.json"
-sed "s/"$SHA256HASH_OLD"/"$SHA256HASH"/" $TMPDIR/temp1.json > "$TMPDIR/temp2.json"
-sed "s/"$FILESIZE_OLD"/"$FILESIZE"/" $TMPDIR/temp2.json > "$TMPDIR/temp3.json"
-sed "s/"$FILENAME_OLD"/"$FILENAME"/" $TMPDIR/temp3.json > "$TMPDIR/temp4.json"
-cp $TMPDIR/temp4.json $TMPDIR/$1.json && rm $TMPDIR/temp*.json
-echo $1: builddate $BUILD_DATETIME_OLD to $BUILD_DATETIME >> $LOGDIR/$LOG
-echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
-echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
+cat <<JSON > $TMPDIR/$1.json
+{
+  "response": [
+    {
+      "datetime": $BUILD_DATE_UNIXTIME,
+      "filename": "$FILENAME",
+      "id": "$SHA256HASH",
+      "romtype": "${rom_array[3]}",
+      "size": $FILESIZE,
+      "url": "$lineage.updater.uri/$FILENAME",
+      "version": "${rom_array[1]}"
+    }
+  ]
+}
+JSON
+echo $1: BUILD_DATE $BUILD_DATE_UNIXTIME_OLD to $BUILD_DATE_UNIXTIME >> $LOGDIR/$LOG
 echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
+echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
+echo $1: romtype ${rom_array_old[3]} to ${rom_array[3]} >> $LOGDIR/$LOG
+echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
+echo $1: version ${rom_array_old[1]} to ${rom_array[1]} >> $LOGDIR/$LOG
 
 ## generate sha256 log
 echo $SHA256HASH $FILENAME > $ROMDIR/$FILENAME.txt
@@ -48,15 +64,6 @@ curl -T $ROMDIR/$FILENAME.txt $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDI
 curl -T $ROMDIR/$FILENAME_IMG $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $ROMDIR/$FILENAME_IMG.txt $FTPDIRROM --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
 curl -T $TMPDIR/$1.json $FTPDIRJSON --netrc-file $TMPDIR/$FTPFILE >> $LOGDIR/$LOG
-
-if [ $BUILDDATE = $BUILDDATE_OLD ]
-then
-    echo "remove duplicate build from log" >> $LOGDIR/$LOG
-    sed "9,16d" $TMPDIR/re_$1.txt > "$TMPDIR/re_$1_temp.txt"
-    cp $TMPDIR/re_$1_temp.txt $TMPDIR/re_$1.txt
-    cp $TMPDIR/re_$1.txt $TMPDIR/$1.txt
-    ex -s +%g/^/m0 +wq $TMPDIR/$1.txt
-fi
 
 if [ "$2" = "infra" ]
 then ./build-json
