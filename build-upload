@@ -8,19 +8,9 @@ fi
 ## import vars
 source build-config.txt
 
-## get data from old build
+## get data from latest build
 cp $TMPDIR/$1.txt $TMPDIR/re_$1.txt
 ex -s +%g/^/m0 +wq $TMPDIR/re_$1.txt
-BUILD_DATE_OLD="$(sed -n '16 p' $TMPDIR/re_$1.txt)"
-BUILD_DATE_UNIXTIME_OLD="$(sed -n '15 p' $TMPDIR/re_$1.txt)"
-SHA256HASH_OLD="$(sed -n '14 p' $TMPDIR/re_$1.txt)"
-FILESIZE_OLD="$(sed -n '13 p' $TMPDIR/re_$1.txt)"
-FILENAME_OLD="$(sed -n '12 p' $TMPDIR/re_$1.txt)"
-## lineage-18.1-20210913-unofficial-starlte.zip
-## [0] = lineage, [1] = 18.1, [2] = 20210913, [3] = unofficial, [4] = starlte.zip
-IFS='-'; read -a rom_array_old <<< "$FILENAME_OLD"; unset IFS
-
-## get new data from latest build
 BUILD_DATE="$(sed -n '8 p' $TMPDIR/re_$1.txt)"
 BUILD_DATE_UNIXTIME="$(sed -n '7 p' $TMPDIR/re_$1.txt)"
 SHA256HASH="$(sed -n '6 p' $TMPDIR/re_$1.txt)"
@@ -28,9 +18,14 @@ FILESIZE="$(sed -n '5 p' $TMPDIR/re_$1.txt)"
 FILENAME="$(sed -n '4 p' $TMPDIR/re_$1.txt)"
 SHA256HASH_IMG="$(sed -n '3 p' $TMPDIR/re_$1.txt)"
 FILENAME_IMG="$(sed -n '1 p' $TMPDIR/re_$1.txt)"
+## lineage-18.1-20210913-unofficial-starlte.zip
+## [0] = lineage, [1] = 18.1, [2] = 20210913, [3] = unofficial, [4] = starlte.zip
+IFS='-'; read -a rom_array_old <<< "$FILENAME_OLD"; unset IFS
 IFS='-'; read -a rom_array <<< "$FILENAME"; unset IFS
 
 ## generate new json
+echo old $1.json: >> $LOGDIR/$LOG
+cat $TMPDIR/$1.json >> $LOGDIR/$LOG
 cat <<JSON > $TMPDIR/$1.json
 {
   "response": [
@@ -46,12 +41,8 @@ cat <<JSON > $TMPDIR/$1.json
   ]
 }
 JSON
-echo $1: BUILD_DATE $BUILD_DATE_UNIXTIME_OLD to $BUILD_DATE_UNIXTIME >> $LOGDIR/$LOG
-echo $1: filename $FILENAME_OLD to $FILENAME >> $LOGDIR/$LOG
-echo $1: sha256hash $SHA256HASH_OLD to $SHA256HASH >> $LOGDIR/$LOG
-echo $1: romtype ${rom_array_old[3]} to ${rom_array[3]} >> $LOGDIR/$LOG
-echo $1: filesize $FILESIZE_OLD to $FILESIZE >> $LOGDIR/$LOG
-echo $1: version ${rom_array_old[1]} to ${rom_array[1]} >> $LOGDIR/$LOG
+echo new $1.json: >> $LOGDIR/$LOG
+cat $TMPDIR/$1.json >> $LOGDIR/$LOG
 
 ## generate sha256 log
 echo $SHA256HASH $FILENAME > $ROMDIR/$FILENAME.txt
