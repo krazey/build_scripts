@@ -35,7 +35,7 @@ cat <<JSON > $TMPDIR/$1.json
       "id": "$SHA256HASH",
       "romtype": "${rom_array[3]}",
       "size": $FILESIZE,
-      "url": "$lineage_updater_uri/$FILENAME",
+      "url": "$FTPROMPATH/$FILENAME",
       "version": "${rom_array[1]}"
     }
   ]
