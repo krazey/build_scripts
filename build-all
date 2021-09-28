@@ -14,16 +14,16 @@ do
 if [ -z ${product_device[$IN]} ]
 then
     echo "--end--/all builds finished" >> $LOGDIR/$LOG
-    if [ "$3" = "clean" ]
-    then
-        echo "--end--/clean $OUT" >> $LOGDIR/$LOG
-        cd $BUILDDIR && make clobber >> $LOGDIR/$LOG 2>&1
-    fi
     exit 0
 else
     if [ $IN = 0 ]
     then
         echo "--start--build+sync--${product_device[$IN]}" >> $LOGDIR/$LOG
+        if [ "$3" = "clean" ]
+        then
+            echo "--clean--$OUT" >> $LOGDIR/$LOG
+            cd $BUILDDIR && make clobber >> $LOGDIR/$LOG 2>&1 && cd $SCRIPTPATH
+        fi
         ( time ./build-script ${product_device[$IN]} sync ) >> $LOGDIR/$LOG 2>&1
         echo "--end--build+sync--/${product_device[$IN]}" >> $LOGDIR/$LOG
     else
