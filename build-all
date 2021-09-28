@@ -13,6 +13,12 @@ while [ 1 ]
 do
 if [ -z ${product_device[$IN]} ]
 then
+    echo "--end--/all builds finished" >> $LOGDIR/$LOG
+    if [ "$3" = "clean" ]
+    then
+        echo "--end--/clean $OUT" >> $LOGDIR/$LOG
+        cd $BUILDDIR && make clobber >> $LOGDIR/$LOG 2>&1
+    fi
     exit 0
 else
     if [ $IN = 0 ]
