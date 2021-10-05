@@ -22,7 +22,7 @@ else
         if [ "$3" = "clean" ]
         then
             echo "--clean--$OUT" >> $LOGDIR/$LOG
-            cd $BUILDDIR && make clobber >> $LOGDIR/$LOG 2>&1 && cd $SCRIPTPATH
+            cd $BUILDDIR; source build/envsetup.sh; make clobber >> $LOGDIR/$LOG 2>&1; cd $SCRIPTPATH
         fi
         ( time ./build-script ${product_device[$IN]} sync ) >> $LOGDIR/$LOG 2>&1
         echo "--end--build+sync--/${product_device[$IN]}" >> $LOGDIR/$LOG
