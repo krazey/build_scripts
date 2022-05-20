@@ -48,7 +48,10 @@ then
         ## move zip and img
         echo "moving ROM zip and RECOVERY image"
         mv $OUT/lineage-*zip "$ROMDIR/$FILENAME"
-        mv $OUT/recovery.img "$ROMDIR/$FILENAME_IMG"
+        if [ -f "$OUT/recovery.img" ]
+        then mv $OUT/recovery.img "$ROMDIR/$FILENAME_IMG"
+        else mv $OUT/boot.img "$ROMDIR/$FILENAME_IMG"
+        fi
         ## log data
         date -d ${name_array[2]} +%Y-%m-%d >> $TMPDIR/$1.txt
         BUILD_DATE_UNIXTIME="$(cat $T/out/build_date.txt)"
