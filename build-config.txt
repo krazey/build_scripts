@@ -7,6 +7,7 @@ export TIMEFORMAT='%3lR'
 
 ## variables
 DEVICES="crownlte,star2lte,starlte"
+THREADS="12"
 BUILDDIR="$HOME/android/lineage"
 LOGDIR="$SCRIPTPATH/LOGS"
 ROMDIR="$SCRIPTPATH/ROM"

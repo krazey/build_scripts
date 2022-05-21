@@ -31,8 +31,8 @@ fi
 echo "begining build process for $1" >> $LOGDIR/$LOG 2>&1
 breakfast $1
 if [ -z $3 ]
-then ( time brunch $1 ) >> $LOGDIR/$LOG 2>&1
-else brunch $1
+then ( time mka bacon -j$THREADS ) >> $LOGDIR/$LOG 2>&1
+else mka bacon -j$THREADS
 fi
 
 ## detect if zip was created, then move to HOME
