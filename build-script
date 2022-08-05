@@ -80,7 +80,10 @@ then
         ## move zip and img
         echo "moving ROM zip and RECOVERY image to $TESTDIR"
         mv $OUT/lineage-*zip "$TESTDIR/$FILENAME"
-        mv $OUT/recovery.img "$TESTDIR/$FILENAME_IMG"
+        if [ -f "$OUT/recovery.img" ]
+        then mv $OUT/recovery.img "$TESTDIR/$FILENAME_IMG"
+        else mv $OUT/boot.img "$TESTDIR/$FILENAME_IMG"
+        fi
     fi
 fi
 
