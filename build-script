@@ -17,6 +17,13 @@ export CCACHE_EXEC=/usr/bin/ccache
 ccache -M 32G
 export CCACHE_COMPRESS=1
 
+if [ "$1" = "purge" ]
+then
+    echo "--clean--$OUT" >> $LOGDIR/$LOG
+    make clobber >> $LOGDIR/$LOG 2>&1; cd $SCRIPTPATH
+    exit 0
+fi
+
 ## sync repos
 if [ -z $2 ]
 then echo no repo sync, variable not set
