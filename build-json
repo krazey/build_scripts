@@ -21,6 +21,9 @@ rm $INFRAUPDATER/nginx/builds.json
 echo } >> $INFRAUPDATER/nginx/builds.json
 while [ 1 ]
 do
+    if [ "${product_device[$IN]}" = "purge" ]
+    then (( IN++ ))
+    fi
     if [ -z ${product_device[$IN]} ]
     then break
     else
