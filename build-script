@@ -29,8 +29,26 @@ if [ -z $2 ]
 then echo no repo sync, variable not set
 else
     if [ "$2" = "sync" ]
-    then echo syncing repo && repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify -j8
-    else echo no repo sync, fix typo: $2
+    then
+        reporepeat=1
+        echo syncing repo
+        while [ 1 ]
+        do
+            repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify -j8
+            status=$?
+            if [ "$status" -ne "0" ] && [ "$reporepeat" -ne "3" ]
+            then
+                (( reporepeat++ ))
+            else
+                if [ "$reporepeat" = "3" ]
+                then
+                    echo !!!repo sync failed!!! && break
+                else
+                    echo repo synced && break
+                fi
+            fi
+        done
+    else echo no repo sync or fix typo: $2
     fi
 fi
 
