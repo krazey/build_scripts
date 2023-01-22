@@ -29,7 +29,7 @@ if [ -z $2 ]
 then echo no repo sync, variable not set
 else
     if [ "$2" = "sync" ]
-    then echo syncing repo && repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify -j$(nproc)
+    then echo syncing repo && repo sync -c --force-sync --no-clone-bundle --no-tags --no-repo-verify -j8
     else echo no repo sync, fix typo: $2
     fi
 fi
