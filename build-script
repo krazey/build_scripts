@@ -76,6 +76,8 @@ then
         mv $OUT/lineage-*zip "$ROMDIR/$FILENAME"
         if [ -f "$OUT/recovery.img" ]
         then mv $OUT/recovery.img "$ROMDIR/$FILENAME_IMG"
+        elif [ -f "$OUT/obj/PACKAGING/target_files_intermediates/lineage_bluejay-target_files-eng.krazey/IMAGES/vendor_boot.img" ]
+        then mv $OUT/obj/PACKAGING/target_files_intermediates/lineage_bluejay-target_files-eng.krazey/IMAGES/vendor_boot.img "$TESTDIR/$FILENAME_IMG"
         else mv $OUT/boot.img "$ROMDIR/$FILENAME_IMG"
         fi
         ## log data
@@ -108,6 +110,8 @@ then
         mv $OUT/lineage-*zip "$TESTDIR/$FILENAME"
         if [ -f "$OUT/recovery.img" ]
         then mv $OUT/recovery.img "$TESTDIR/$FILENAME_IMG"
+        elif [ -f "$OUT/obj/PACKAGING/target_files_intermediates/lineage_bluejay-target_files-eng.krazey/IMAGES/vendor_boot.img" ]
+        then mv $OUT/obj/PACKAGING/target_files_intermediates/lineage_bluejay-target_files-eng.krazey/IMAGES/vendor_boot.img "$TESTDIR/$FILENAME_IMG"
         else mv $OUT/boot.img "$TESTDIR/$FILENAME_IMG"
         fi
     fi
