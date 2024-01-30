@@ -9,7 +9,7 @@ fi
 source build-config.txt
 
 ## setup environment
-source .profile
+source $HOME/.profile
 cd $BUILDDIR
 source build/envsetup.sh
 export USE_CCACHE=1
